@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "parties": {
+      "$partyId": {
+        ".read": true,
+        ".write": "!data.exists() || data.child('passwordHash').val() === newData.child('passwordHash').val()"
+      }
+    }
+  }
+}

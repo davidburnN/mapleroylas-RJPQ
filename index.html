@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>羅密歐與茱麗葉 · 平台記憶</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header__top">
+        <div class="header__title">
+          <h1 id="pageTitle">羅密歐與茱麗葉</h1>
+          <p class="subtitle" id="pageSubtitle">平台記憶工具 · 四房間 4×10</p>
+        </div>
+        <button type="button" class="lang-toggle" id="langToggle" aria-label="切換為英文">EN</button>
+      </div>
+
+      <section class="party-panel" id="partyPanel">
+        <div class="party-panel__tabs" role="tablist">
+          <button type="button" class="party-tab active" data-party-mode="solo" id="soloTab">單人模式</button>
+          <button type="button" class="party-tab" data-party-mode="create" id="createTab">開立隊伍</button>
+          <button type="button" class="party-tab" data-party-mode="join" id="joinTab">加入隊伍</button>
+        </div>
+
+        <div class="party-panel__body" id="partyPanelBody">
+          <p class="party-hint" id="soloHint">資料只存在本機，適合自己練習或單人使用。</p>
+
+          <form class="party-form hidden" id="createForm">
+            <label class="field">
+              <span id="createPasswordLabel">隊伍密碼</span>
+              <input type="password" id="createPassword" autocomplete="new-password" required minlength="4" maxlength="32">
+            </label>
+            <button type="submit" class="btn btn--primary" id="createSubmitBtn">建立隊伍</button>
+          </form>
+
+          <form class="party-form hidden" id="joinForm">
+            <label class="field">
+              <span id="joinCodeLabel">隊伍代碼</span>
+              <input type="text" id="joinCode" maxlength="6" pattern="[A-Za-z0-9]{6}" required>
+            </label>
+            <label class="field">
+              <span id="joinPasswordLabel">隊伍密碼</span>
+              <input type="password" id="joinPassword" autocomplete="current-password" required minlength="4" maxlength="32">
+            </label>
+            <button type="submit" class="btn btn--primary" id="joinSubmitBtn">加入隊伍</button>
+          </form>
+        </div>
+
+        <div class="party-online hidden" id="partyOnlineBar">
+          <div class="party-online__info">
+            <span class="party-online__dot" id="partyStatusDot"></span>
+            <span id="partyOnlineText">連線中</span>
+          </div>
+          <div class="party-online__actions">
+            <button type="button" class="btn btn--ghost btn--small" id="copyLinkBtn">複製連結</button>
+            <button type="button" class="btn btn--secondary btn--small" id="leavePartyBtn">離開隊伍</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="legend">
+        <span class="legend__item legend__item--success" id="legendSuccess">左鍵：我成功的平台</span>
+        <span class="legend__item legend__item--fail" id="legendFail">右鍵：他人成功 / 我失敗</span>
+        <span class="legend__item legend__item--empty" id="legendClear">再點一次：清除標記</span>
+      </div>
+    </header>
+
+    <nav class="room-tabs" id="roomTabs" aria-label="房間選擇"></nav>
+
+    <main class="main">
+      <section class="room-panel">
+        <div class="room-panel__header">
+          <h2 id="roomTitle">房間 1</h2>
+          <div class="room-stats">
+            <span id="successCount" class="stat stat--success">成功 0</span>
+            <span id="failCount" class="stat stat--fail">失敗 0</span>
+            <span id="remainingCount" class="stat">未試 40</span>
+          </div>
+        </div>
+
+        <div class="grid-wrapper">
+          <div class="grid-labels grid-labels--top" id="colLabels"></div>
+          <div class="grid-body">
+            <div class="grid-labels grid-labels--left" id="rowLabels"></div>
+            <div class="platform-grid" id="platformGrid" role="grid" aria-label="平台格子"></div>
+          </div>
+        </div>
+
+        <div class="room-actions">
+          <button type="button" class="btn btn--secondary" id="clearRoomBtn">清除此房間</button>
+          <button type="button" class="btn btn--secondary" id="clearAllBtn">清除全部房間</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p id="footerText">資料自動儲存於瀏覽器本機 · 關閉後仍保留</p>
+      <div class="footer-actions">
+        <button type="button" class="btn btn--ghost" id="exportBtn">匯出 JSON</button>
+        <button type="button" class="btn btn--ghost" id="importBtn">匯入 JSON</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="sync.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
