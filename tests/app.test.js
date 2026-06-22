@@ -21,13 +21,9 @@ function setupApp() {
   window.alert = () => {};
   window.confirm = () => true;
   window.navigator.clipboard = { writeText: async () => {} };
-  window.FIREBASE_CONFIG = undefined;
-  window.firebase = undefined;
 
-  const syncScript = read("sync.js");
   const appScript = read("app.js");
   const context = dom.getInternalVMContext();
-  vm.runInContext(syncScript, context);
   vm.runInContext(appScript, context);
 
   return window;
