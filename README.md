@@ -151,7 +151,26 @@ npx serve .
 
 ---
 
-## 六、注意事項
+## 六、自動測試與 CI
+
+此專案已加入自動測試（Vitest + JSDOM）與 GitHub Actions CI。
+
+### 本地跑測試
+
+```bash
+npm install
+npm test
+```
+
+### CI 會做什麼
+
+- Workflow：`.github/workflows/ci.yml`
+- 觸發時機：`push` 到 `main`、或建立/更新 PR
+- 動作：`npm ci` → `npm test`
+
+---
+
+## 七、注意事項
 
 - 隊伍密碼是**共享密碼**，請只給隊友，不要用在其他重要帳號
 - Firebase 免費方案有流量上限，一般打副本足夠
@@ -171,3 +190,5 @@ npx serve .
 | `firebase-config.example.js` | 設定範例 |
 | `database.rules.json` | Firebase 安全規則範本 |
 | `.github/workflows/pages.yml` | GitHub Pages 自動部署 |
+| `.github/workflows/ci.yml` | 自動測試（CI） |
+| `tests/app.test.js` | 前端互動測試 |
