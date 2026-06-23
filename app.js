@@ -231,7 +231,18 @@ function renderStats() {
 function handleCellClick(row, col, target) {
   const room = state.rooms[state.currentRoom];
   const current = room[row][col];
-  room[row][col] = current === target ? null : target;
+
+  if (target === "success") {
+    if (current === "success") {
+      room[row][col] = null;
+    } else {
+      // Enforce one-success-per-row rule.
+      room[row] = room[row].map((_, colIndex) => (colIndex === col ? "success" : "fail"));
+    }
+  } else {
+    room[row][col] = current === target ? null : target;
+  }
+
   saveState();
   render();
 }
