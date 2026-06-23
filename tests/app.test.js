@@ -90,6 +90,8 @@ describe("RJ PQ tracker", () => {
     expect(updatedCells[0].classList.contains("platform-cell--fail")).toBe(true);
     expect(successCount.textContent).toContain("1");
     expect(failCount.textContent).toContain("3");
+  });
+
   it("clears room without confirmation and supports undo", () => {
     const window = setupApp();
     const cell = window.document.querySelector(".platform-cell");
