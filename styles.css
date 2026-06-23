@@ -18,7 +18,9 @@
   --accent: #7eb8ff;
   --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   --radius: 12px;
-  --cell-size: clamp(28px, 4.2vw, 44px);
+  --row-label-width: 36px;
+  --cell-width: clamp(40px, 8vw, 62px);
+  --cell-height: clamp(28px, 4.2vw, 44px);
 }
 
 html,
@@ -206,16 +208,18 @@ body {
 }
 
 .grid-wrapper {
-  overflow-x: auto;
+  width: 100%;
+  overflow-x: hidden;
   padding-bottom: 8px;
 }
 
 .grid-labels--top {
   display: grid;
-  grid-template-columns: 36px repeat(4, var(--cell-size));
+  grid-template-columns: var(--row-label-width) repeat(4, minmax(0, 1fr));
   gap: 6px;
   margin-bottom: 6px;
   padding-left: 0;
+  width: 100%;
 }
 
 .grid-labels--top span,
@@ -229,22 +233,25 @@ body {
 }
 
 .grid-body {
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--row-label-width) minmax(0, 1fr);
   gap: 6px;
+  width: 100%;
 }
 
 .grid-labels--left {
   display: grid;
-  grid-template-rows: repeat(10, var(--cell-size));
+  grid-template-rows: repeat(10, var(--cell-height));
   gap: 6px;
-  width: 36px;
+  width: var(--row-label-width);
 }
 
 .platform-grid {
   display: grid;
-  grid-template-columns: repeat(4, var(--cell-size));
-  grid-template-rows: repeat(10, var(--cell-size));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(10, var(--cell-height));
   gap: 6px;
+  width: 100%;
 }
 
 .platform-cell {
