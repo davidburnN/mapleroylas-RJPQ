@@ -18,18 +18,25 @@ Apply this skill automatically for implementation work in this repository, inclu
 
 ## Required Workflow
 
-1. **After edits are complete**, run tests:
+1. **Preflight before any edit**:
+   - Run: `git branch --show-current`
+   - If current branch is `main`, **stop implementation** and first create/switch branch.
+   - Branch naming:
+     - feature: `feature/<short-name>`
+     - fix: `fix/<short-name>`
+     - chore/docs: `chore/<short-name>` or `docs/<short-name>`
+2. **After edits are complete**, run tests:
    - Default command: `npm test`
    - If project test command differs in `package.json`, use that script.
-2. **If tests fail**:
+3. **If tests fail**:
    - Fix the issue if straightforward.
    - Re-run tests until passing, or report blocker with exact failing step.
-3. **Before final response**, run `git status --short` to confirm changed files.
-4. **For new development work**, use a feature branch and PR flow:
+4. **Before final response**, run `git status --short` to confirm changed files.
+5. **For new development work**, use a feature branch and PR flow:
    - Create/switch branch first (do not develop directly on `main`).
    - Push branch to remote.
    - Open PR from feature branch into `main`.
-5. **Always include a copyable git command block** in the final response.
+6. **Always include a copyable git command block** in the final response.
 
 ## Final Response Contract
 
@@ -76,4 +83,6 @@ git push
 - Do not auto-commit or auto-push unless user explicitly asks.
 - Still provide commands even if user did not ask for commit yet.
 - If tests cannot run (missing dependency/tool), state why and provide the same git command block with a warning.
+- Never start code changes on `main`.
+- If already on `main`, first provide branch creation command and continue only after branch switch.
 - Do not recommend direct push to `main` for new development.
