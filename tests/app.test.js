@@ -74,6 +74,24 @@ describe("RJ PQ tracker", () => {
     expect(title.textContent).not.toBe(initialTitle);
   });
 
+  it("keeps exactly one success per row", () => {
+    const window = setupApp();
+    const successCount = window.document.getElementById("successCount");
+    const failCount = window.document.getElementById("failCount");
+
+    let cells = window.document.querySelectorAll(".platform-cell");
+    cells[0].dispatchEvent(new window.MouseEvent("click", { bubbles: true, cancelable: true }));
+
+    cells = window.document.querySelectorAll(".platform-cell");
+    cells[1].dispatchEvent(new window.MouseEvent("click", { bubbles: true, cancelable: true }));
+
+    const updatedCells = window.document.querySelectorAll(".platform-cell");
+    expect(updatedCells[1].classList.contains("platform-cell--success")).toBe(true);
+    expect(updatedCells[0].classList.contains("platform-cell--fail")).toBe(true);
+    expect(successCount.textContent).toContain("1");
+    expect(failCount.textContent).toContain("3");
+  });
+
   it("clears room without confirmation and supports undo", () => {
     const window = setupApp();
     const cell = window.document.querySelector(".platform-cell");
