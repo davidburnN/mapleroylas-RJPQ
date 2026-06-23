@@ -263,12 +263,24 @@ function render() {
   renderStats();
 }
 
-els.clearRoomBtn.addEventListener("click", () => {
-  if (!confirm(t("confirmClearRoom", state.currentRoom + 1))) return;
-  clearRoom(state.currentRoom);
-});
+function safeListen(element, eventName, handler, elementName) {
+  if (!element) {
+    console.warn(`[app] Missing element: ${elementName}`);
+    return;
+  }
+  element.addEventListener(eventName, handler);
+}
 
-els.clearAllBtn.addEventListener("click", clearAllRooms);
-els.langToggle.addEventListener("click", toggleLanguage);
+safeListen(
+  els.clearRoomBtn,
+  "click",
+  () => {
+    if (!confirm(t("confirmClearRoom", state.currentRoom + 1))) return;
+    clearRoom(state.currentRoom);
+  },
+  "clearRoomBtn"
+);
+safeListen(els.clearAllBtn, "click", clearAllRooms, "clearAllBtn");
+safeListen(els.langToggle, "click", toggleLanguage, "langToggle");
 
 render();
