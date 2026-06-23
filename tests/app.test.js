@@ -90,5 +90,23 @@ describe("RJ PQ tracker", () => {
     expect(updatedCells[0].classList.contains("platform-cell--fail")).toBe(true);
     expect(successCount.textContent).toContain("1");
     expect(failCount.textContent).toContain("3");
+  it("clears room without confirmation and supports undo", () => {
+    const window = setupApp();
+    const cell = window.document.querySelector(".platform-cell");
+    const clearBtn = window.document.getElementById("clearRoomBtn");
+    const undoBtn = window.document.getElementById("undoRoomBtn");
+    const successCount = window.document.getElementById("successCount");
+
+    window.confirm = () => false;
+    cell.dispatchEvent(new window.MouseEvent("click", { bubbles: true, cancelable: true }));
+    expect(successCount.textContent).toContain("1");
+
+    clearBtn.dispatchEvent(new window.MouseEvent("click", { bubbles: true, cancelable: true }));
+    expect(successCount.textContent).toContain("0");
+    expect(undoBtn.disabled).toBe(false);
+
+    undoBtn.dispatchEvent(new window.MouseEvent("click", { bubbles: true, cancelable: true }));
+    expect(successCount.textContent).toContain("1");
+    expect(undoBtn.disabled).toBe(true);
   });
 });
