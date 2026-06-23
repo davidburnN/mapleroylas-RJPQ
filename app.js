@@ -23,12 +23,8 @@ const messages = {
     clearRoom: "清除此房間",
     clearAll: "清除全部房間",
     footerAutosave: "資料自動儲存於瀏覽器本機 · 關閉後仍保留",
-    exportJson: "匯出 JSON",
-    importJson: "匯入 JSON",
     confirmClearRoom: (n) => `確定要清除房間 ${n} 的所有標記嗎？`,
     confirmClearAll: "確定要清除全部四個房間的記錄嗎？",
-    importSuccess: "匯入成功！",
-    importFail: "匯入失敗，請確認 JSON 格式正確。",
     langSwitch: "EN",
     langSwitchAria: "切換為英文",
   },
@@ -50,12 +46,8 @@ const messages = {
     clearRoom: "Clear this room",
     clearAll: "Clear all rooms",
     footerAutosave: "Data auto-saved locally · persists after closing",
-    exportJson: "Export JSON",
-    importJson: "Import JSON",
     confirmClearRoom: (n) => `Clear all marks in room ${n}?`,
     confirmClearAll: "Clear all records in all four rooms?",
-    importSuccess: "Import successful!",
-    importFail: "Import failed. Please check the JSON format.",
     langSwitch: "中文",
     langSwitchAria: "Switch to Chinese",
   },
@@ -89,9 +81,6 @@ const els = {
   remainingCount: document.getElementById("remainingCount"),
   clearRoomBtn: document.getElementById("clearRoomBtn"),
   clearAllBtn: document.getElementById("clearAllBtn"),
-  exportBtn: document.getElementById("exportBtn"),
-  importBtn: document.getElementById("importBtn"),
-  importFile: document.getElementById("importFile"),
   pageTitle: document.getElementById("pageTitle"),
   pageSubtitle: document.getElementById("pageSubtitle"),
   legendSuccess: document.getElementById("legendSuccess"),
@@ -168,8 +157,6 @@ function renderStaticText() {
   els.platformGrid.setAttribute("aria-label", t("gridLabel"));
   els.clearRoomBtn.textContent = t("clearRoom");
   els.clearAllBtn.textContent = t("clearAll");
-  els.exportBtn.textContent = t("exportJson");
-  els.importBtn.textContent = t("importJson");
   els.footerText.textContent = t("footerAutosave");
   els.langToggle.textContent = t("langSwitch");
   els.langToggle.setAttribute("aria-label", t("langSwitchAria"));
@@ -262,38 +249,6 @@ function clearAllRooms() {
   render();
 }
 
-function exportData() {
-  const payload = {
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    rooms: state.rooms,
-  };
-
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `rj-pq-platforms-${new Date().toISOString().slice(0, 10)}.json`;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
-function importData(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const parsed = JSON.parse(String(reader.result));
-      state.rooms = normalizeRooms(parsed.rooms ?? parsed);
-      saveState();
-      render();
-      alert(t("importSuccess"));
-    } catch {
-      alert(t("importFail"));
-    }
-  };
-  reader.readAsText(file);
-}
-
 function toggleLanguage() {
   state.lang = state.lang === "zh-TW" ? "en" : "zh-TW";
   saveLanguage();
@@ -314,13 +269,6 @@ els.clearRoomBtn.addEventListener("click", () => {
 });
 
 els.clearAllBtn.addEventListener("click", clearAllRooms);
-els.exportBtn.addEventListener("click", exportData);
-els.importBtn.addEventListener("click", () => els.importFile.click());
-els.importFile.addEventListener("change", (event) => {
-  const file = event.target.files?.[0];
-  if (file) importData(file);
-  event.target.value = "";
-});
 els.langToggle.addEventListener("click", toggleLanguage);
 
 render();
