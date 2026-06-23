@@ -36,7 +36,14 @@ Apply this skill automatically for implementation work in this repository, inclu
    - Create/switch branch first (do not develop directly on `main`).
    - Push branch to remote.
    - Open PR from feature branch into `main`.
-6. **Always include a copyable git command block** in the final response.
+6. **Post-merge cleanup (when applicable)**:
+   - Run `git fetch --prune`.
+   - If feature branch is merged into `origin/main`, delete local feature branch.
+   - Cleanup sequence:
+     - `git checkout main`
+     - `git pull --ff-only origin main`
+     - `git branch -d <merged-branch>`
+7. **Always include a copyable git command block** in the final response.
 
 ## Final Response Contract
 
@@ -86,3 +93,4 @@ git push
 - Never start code changes on `main`.
 - If already on `main`, first provide branch creation command and continue only after branch switch.
 - Do not recommend direct push to `main` for new development.
+- Do not delete local branches unless they are confirmed merged into `origin/main`.
