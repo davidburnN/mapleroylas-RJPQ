@@ -21,6 +21,7 @@ const messages = {
     cellLabel: (row, col) => `第 ${row} 排，第 ${col} 列`,
     gridLabel: "平台格子",
     clearRoom: "清除此房間",
+    undoRoom: "回復此房間",
     clearAll: "清除全部房間",
     footerAutosave: "資料自動儲存於瀏覽器本機 · 關閉後仍保留",
     confirmClearRoom: (n) => `確定要清除房間 ${n} 的所有標記嗎？`,
@@ -44,6 +45,7 @@ const messages = {
     cellLabel: (row, col) => `Row ${row}, Col ${col}`,
     gridLabel: "Platform grid",
     clearRoom: "Clear this room",
+    undoRoom: "Undo this room",
     clearAll: "Clear all rooms",
     footerAutosave: "Data auto-saved locally · persists after closing",
     confirmClearRoom: (n) => `Clear all marks in room ${n}?`,
@@ -63,6 +65,7 @@ const state = {
   currentRoom: 0,
   lang: loadLanguage(),
   rooms: loadState(),
+  lastClearedRoomSnapshot: null,
 };
 
 function t(key, ...args) {
@@ -80,6 +83,7 @@ const els = {
   failCount: document.getElementById("failCount"),
   remainingCount: document.getElementById("remainingCount"),
   clearRoomBtn: document.getElementById("clearRoomBtn"),
+  undoRoomBtn: document.getElementById("undoRoomBtn"),
   clearAllBtn: document.getElementById("clearAllBtn"),
   pageTitle: document.getElementById("pageTitle"),
   pageSubtitle: document.getElementById("pageSubtitle"),
@@ -96,6 +100,10 @@ function createEmptyRoom() {
 
 function createEmptyRooms() {
   return Array.from({ length: ROOM_COUNT }, createEmptyRoom);
+}
+
+function cloneRoom(room) {
+  return room.map((row) => [...row]);
 }
 
 function normalizeRooms(rooms) {
@@ -156,6 +164,7 @@ function renderStaticText() {
   els.roomTabs.setAttribute("aria-label", t("roomNavLabel"));
   els.platformGrid.setAttribute("aria-label", t("gridLabel"));
   els.clearRoomBtn.textContent = t("clearRoom");
+  els.undoRoomBtn.textContent = t("undoRoom");
   els.clearAllBtn.textContent = t("clearAll");
   els.footerText.textContent = t("footerAutosave");
   els.langToggle.textContent = t("langSwitch");
@@ -226,6 +235,7 @@ function renderStats() {
   els.successCount.textContent = t("success", stats.success);
   els.failCount.textContent = t("fail", stats.fail);
   els.remainingCount.textContent = t("remaining", stats.remaining);
+  els.undoRoomBtn.disabled = state.lastClearedRoomSnapshot?.roomIndex !== state.currentRoom;
 }
 
 function handleCellClick(row, col, target) {
@@ -237,7 +247,19 @@ function handleCellClick(row, col, target) {
 }
 
 function clearRoom(roomIndex) {
+  state.lastClearedRoomSnapshot = {
+    roomIndex,
+    roomData: cloneRoom(state.rooms[roomIndex]),
+  };
   state.rooms[roomIndex] = createEmptyRoom();
+  saveState();
+  render();
+}
+
+function undoClearRoom(roomIndex) {
+  if (state.lastClearedRoomSnapshot?.roomIndex !== roomIndex) return;
+  state.rooms[roomIndex] = cloneRoom(state.lastClearedRoomSnapshot.roomData);
+  state.lastClearedRoomSnapshot = null;
   saveState();
   render();
 }
@@ -274,12 +296,10 @@ function safeListen(element, eventName, handler, elementName) {
 safeListen(
   els.clearRoomBtn,
   "click",
-  () => {
-    if (!confirm(t("confirmClearRoom", state.currentRoom + 1))) return;
-    clearRoom(state.currentRoom);
-  },
+  () => clearRoom(state.currentRoom),
   "clearRoomBtn"
 );
+safeListen(els.undoRoomBtn, "click", () => undoClearRoom(state.currentRoom), "undoRoomBtn");
 safeListen(els.clearAllBtn, "click", clearAllRooms, "clearAllBtn");
 safeListen(els.langToggle, "click", toggleLanguage, "langToggle");
 
